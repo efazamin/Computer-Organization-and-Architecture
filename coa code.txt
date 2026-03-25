@@ -1,0 +1,255 @@
+### Write an assembly program that non-stop prints Hello World. Hints: Use unconditional jmp and label instructions.
+   
+
+.MODEL SMALL
+.STACK 100H
+
+.DATA
+    msg DB 0ah,0dh,"Hello World $"  ; Message with newline  0ah=10,0bh=13 dile o hobe
+
+.CODE 
+  
+  
+START:
+
+    MOV AX, @DATA     ; Initialize data segment
+    MOV DS, AX
+
+naim-loop: 
+
+    MOV AH, 9
+    LEA DX, msg       ; Load address of message into DX
+          
+    INT 21H           
+
+    JMP naim-loop   
+
+END START
+
+
+### Write an assembly program that prints Hello World five times and then prints Bye world. Hints: Use unconditional  CMP, conditional JE, JNE instruction. 
+
+when count variable declare inside data segment
+
+.MODEL SMALL
+.STACK 100H
+
+.DATA
+    helloMsg DB 13,10, "Hello World $"
+    byeMsg   DB 13,10, "Bye World $"
+    count    DB 0      ; Counter initialized to 0
+
+.CODE
+
+START:
+
+    MOV AX, @DATA
+    MOV DS, AX
+
+LOOP_START:
+
+    CMP count, 5        ;Compare counter with 5
+    JE SHOW_BYE         ;JE = Jump if Equal (to end loop and print "Bye")  
+
+    
+    ; Print Hello World
+    
+    MOV AH, 9
+    LEA DX, helloMsg
+    INT 21H
+
+    INC count           ; Increase counter
+    JNE LOOP_START   ; If not 5, go back to loop    JNE =Jump if Not Equal (to continue looping) also  jmp=  Repeat loop    JMP =END_PROGRAM
+
+SHOW_BYE:
+
+    ; Print Bye World
+     
+    MOV AH, 9
+    LEA DX, byeMsg
+    INT 21H
+
+
+END START
+
+when count variable declare inside code segment
+
+.MODEL SMALL
+.STACK 100H
+
+.DATA
+   hello DB 13,10, "Hello World $"
+    bye   DB 13,10, "Bye World $"
+
+.CODE
+START:
+    MOV AX, @DATA
+    MOV DS, AX
+
+    MOV CL, 0
+
+REPEAT:
+    CMP CL, 5
+    JE DONE
+
+    LEA DX, hello
+    MOV AH, 09H
+    INT 21H
+
+    INC CL
+    JNE REPEAT
+
+DONE:
+    LEA DX, bye
+    MOV AH, 09H
+    INT 21H
+
+
+END START
+
+
+
+
+###Read an integer from user. Check whether the number is positive or negative. Hints: JMP, JL, JG instructions
+
+
+
+.MODEL SMALL
+.STACK 100H
+
+.DATA
+    num DB ?                 ; store number (1-digit)
+    msg1 DB "ENTER A NUMBER: $"
+    posMsg DB 13, 10, "POSITIVE$"
+    negMsg DB 13, 10, "NEGATIVE$"
+
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+
+    ; PRINT msg1
+    MOV AH, 9
+    LEA DX, msg1
+    INT 21H 
+    
+    
+
+    ; READ FIRST CHARACTER
+    MOV AH, 1
+    INT 21H        ; AL = input char
+      
+      
+      
+    CMP AL, '-'     ; check if negative sign
+    JE NEGATIVE     ; if '-', go to NEGATIVE
+
+    ; otherwise, it's positive
+    SUB AL, 30H     ; convert to number
+    MOV num, AL     ; store in num  
+    
+   
+    ; NEW LINE
+    MOV AH, 2
+    MOV DL, 10
+    INT 21H
+    MOV DL, 13
+    INT 21H
+
+    ; PRINT POSITIVE
+    MOV AH, 9
+    LEA DX, posMsg
+    INT 21H
+    JMP END_PROGRAM
+
+NEGATIVE:
+    ; read next digit
+    MOV AH, 1
+    INT 21H
+    SUB AL, 30H
+    MOV num, AL
+
+    ; NEW LINE
+    MOV AH, 2
+    MOV DL, 10
+    INT 21H
+    MOV DL, 13
+    INT 21H
+
+    ; PRINT NEGATIVE
+    MOV AH, 9
+    LEA DX, negMsg
+    INT 21H
+
+END_PROGRAM:
+    MOV AH, 4CH
+    INT 21H
+
+MAIN ENDP
+END MAIN
+
+
+
+
+#######  Suppose that CL contains the value of 5. Take an integer from user. Compare the value with CL. And show whether the user input is less than, greater than and equal to CL. Hints: use CMP, JL, JG, JE
+
+.MODEL SMALL
+.STACK 100H
+
+.DATA
+    msg1 DB "Enter a number: $"
+    lessMsg DB 13,10, "Less than 5$"
+    moreMsg DB 13,10, "Greater than 5$"
+    equalMsg DB 13,10, "Equal to 5$"
+
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+
+    ; Set CL = 5
+    MOV CL, 5
+
+    ; Show prompt
+    MOV AH, 9
+    LEA DX, msg1
+    INT 21H
+
+    ; Take input
+    MOV AH, 1
+    INT 21H         ; AL = character input
+    SUB AL, 30H     ; Convert ASCII to number
+
+    ; Compare AL with CL
+    CMP AL, CL
+    JL LESS_THAN
+    JG GREATER_THAN
+    JE EQUAL_TO
+
+LESS_THAN:
+    MOV AH, 9
+    LEA DX, lessMsg
+    INT 21H
+    JMP END_PROGRAM
+
+GREATER_THAN:
+    MOV AH, 9
+    LEA DX, moreMsg
+    INT 21H
+    JMP END_PROGRAM
+
+EQUAL_TO:
+    MOV AH, 9
+    LEA DX, equalMsg
+    INT 21H
+
+END_PROGRAM:
+    MOV AH, 4CH
+    INT 21H
+
+MAIN ENDP
+END MAIN
+
+
+
+

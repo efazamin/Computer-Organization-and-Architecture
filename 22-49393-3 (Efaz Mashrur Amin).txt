@@ -1,0 +1,41 @@
+.MODEL SMALL
+.STACK 100H
+
+.DATA
+    msg1    DB 13, 10, "Input: $"
+    msg2    DB 13, 10, "Output: Wrong input; Decimal digits only.$"
+    num     DB ?     
+
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+
+    MOV AH, 9
+    LEA DX, msg1
+    INT 21H
+   
+    MOV AH, 1
+    INT 21H      
+    
+    CMP AL, '0'
+    JL WRONG_INPUT     
+    CMP AL, '9'
+    JG WRONG_INPUT     
+    
+    SUB AL, 30H
+    MOV num, AL
+ 
+    JMP EXIT_PROGRAM
+
+WRONG_INPUT:
+    
+    MOV AH, 9
+    LEA DX, msg2
+    INT 21H
+
+EXIT_PROGRAM:
+    MOV AH, 4CH
+    INT 21H
+MAIN ENDP
+END MAIN
