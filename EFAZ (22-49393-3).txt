@@ -1,0 +1,133 @@
+1.
+.model small
+.stack 100h
+.data
+.code
+main proc
+    mov ax, @data
+    mov ds, ax
+
+    mov cx, 256      
+    mov al, 0        
+
+print_loop:
+    mov dl, al       
+    mov ah, 02h      
+    int 21h
+
+    inc al           
+    loop print_loop
+
+    mov ah, 4Ch
+    int 21h
+main endp
+end main
+============================================
+
+2.
+.MODEL SMALL
+.STACK 100H
+.DATA    
+ 
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    MOV AX,0           
+    MOV BX,100         
+    MOV CX,20
+SUM:
+ADD AX,BX
+SUB BX,5
+LOOP SUM
+ 
+
+MAIN ENDP  
+END MAIN
+============================================
+
+3.
+.model small
+.stack 100h
+.data
+msg1 db 'Enter a character: $'
+msg2 db 0Ah,0Dh,'Thank you.$'
+.code
+main proc
+    mov ax, @data
+    mov ds, ax
+
+    ; print message
+    mov ah, 09h
+    lea dx, msg1
+    int 21h
+
+    ; read character
+    mov ah, 01h
+    int 21h
+    mov bl, al       
+
+    ; newline
+    mov dl, 0Ah
+    mov ah, 02h
+    int 21h
+    mov dl, 0Dh
+    int 21h
+
+    mov cx, 50       
+display_loop:
+    mov dl, bl
+    mov ah, 02h
+    int 21h
+    loop display_loop
+
+    ; newline + Thank you
+    mov ah, 09h
+    lea dx, msg2
+    int 21h
+
+    mov ah, 4Ch
+    int 21h
+main endp
+end main
+=================================================
+
+4.
+.model small
+.stack 100h
+.data
+.code
+main proc
+    mov ax, @data
+    mov ds, ax
+
+    mov al, 80h      
+    mov cx, 128      
+    mov bx, 0        
+
+print_loop:
+    mov dl, al
+    mov ah, 02h
+    int 21h
+
+    inc bx
+    cmp bx, 10
+    jne skip_newline
+
+    ; print newline
+    mov dl, 0Ah
+    mov ah, 02h
+    int 21h
+    mov dl, 0Dh
+    int 21h
+
+    mov bx, 0
+skip_newline:
+    inc al
+    loop print_loop
+
+    mov ah, 4Ch
+    int 21h
+main endp
+end main
+===============================================
